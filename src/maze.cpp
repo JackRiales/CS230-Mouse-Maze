@@ -13,6 +13,9 @@ _cheese(&_map[0][0]),
 _mouse(_start),
 _initialized(false)
 {
+    // Seed random for direction choosing
+    srand (time(NULL));
+
     // Iterate through map and initialize tiles
     for (unsigned int x = 0; x < x_max; x++) {
         for (unsigned int y = 0; y < y_max; y++) {
@@ -110,7 +113,48 @@ void Maze::print()
 int Maze::update()
 {
     while (!_mouse.is_done()) {
+        // If the mouse is on the cheese, it's done
+        if (_mouse.current() == _cheese)
+            _mouse.set_done(true);
+        else {
+            // For reference, where the mouse is right now
+            int x = _mouse.current()->x;
+            int y = _mouse.current()->y;
 
+            // If no direction has yet been chosen, choose one
+            if (_mouse.chosen_dir() == -1) {
+                // Otherwise, it needs to pick a direction and go towards it --
+                // -- Array of four directions
+                bool dirs[] = { false, false, false, false };
+
+                // Check free directions
+                if ( y - 1 >= 0 && !_map[y-1][x].wall )
+                    dirs[Mouse::UP] = true;
+                if ( y + 1 >= 0 && !_map[y+1][x].wall )
+                    dirs[Mouse::DOWN] = true;
+                if ( x - 1 >= 0 && !_map[y][x-1].wall )
+                    dirs[Mouse::LEFT] = true;
+                if ( y + 1 >= 0 && !_map[y][x+1].wall )
+                    dirs[Mouse::RIGHT] = true;
+
+                bool got_dir = false;
+                while (!got_dir) {
+                    int random_val = rand()%4;
+                    if (dirs[random_val]) {
+                        _mouse.set_direction(dirs[random_val]);
+                        got_dir = true;
+                        cout << got_dir;
+                        return 0;
+                    }
+                }
+            }
+
+            // Otherwise, keep moving in that direction until forced to turn
+            else {
+
+            }
+        }
+        print();
     }
     return 0;
 }
@@ -119,6 +163,6 @@ int main()
 {
     ifstream in("input.txt");
     Maze maze (in);
-    maze.print();
+    maze.update();
     return 0;
 }
