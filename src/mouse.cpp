@@ -17,6 +17,7 @@ _done(false)
 void Mouse::place_at(Tile *tile)
 {
     _current = tile;
+    _visited.push(*tile);
 }
 
 bool Mouse::update()

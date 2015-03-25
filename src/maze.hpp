@@ -17,7 +17,7 @@ public:
     Maze(std::ifstream& in);
     ~Maze();
 
-    void read(std::ifstream& in);
+    bool read(std::ifstream& in);
     void print();
     int update();
 
@@ -28,6 +28,7 @@ private:
     Tile    *_start;            // Pointer to starting position
     Tile    *_cheese;           // Pointer to end (cheese) position
     Mouse   _mouse;             // Mouse that moves through the maze
+    bool    _initialized;       // Has the maze been read in?
 };
 
 #endif
